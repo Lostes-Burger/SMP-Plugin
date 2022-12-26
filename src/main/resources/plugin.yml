@@ -1,0 +1,18 @@
+name: SMPPlugin
+version: '${project.version}'
+main: de.lostesburger.smp.smpplugin.Main
+api-version: 1.19
+author: "Lostes_Burger"
+commands:
+  tpa:
+
+  tpaccept:
+
+  rf:
+
+  endp:
+
+  gunp:
+
+  itemStackInfo:
+

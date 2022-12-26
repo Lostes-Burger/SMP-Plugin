@@ -1,0 +1,113 @@
+enabled: true
+präfix: "[§bE§9Z§fB§r] "
+
+rf:
+  world: "rfm"
+
+death:
+  message: true
+
+gunp:
+  enabled: true
+  x: 228
+  y: 63
+  z: 145
+  world: "rfm"
+
+end:
+  enabled: true
+  x: 704
+  y: 32
+  z: -1424
+  world: "world"
+
+tp:
+  enabled: true
+  price: 1
+  fullHealth: true
+
+notToExpensive:
+  enabled: true
+  setPrice: 25
+
+disablePhantomSpawn:
+  enabled: true
+  replaceWith: "COD"
+  slowFalling: true
+
+mobSpawner:
+  drop: false
+
+moreEnchant:
+  enabled: true
+  addLvl: 1
+
+bedrock:
+  break: true
+  block: "GOLD_BLOCK"
+  world: "world_nether"
+
+becaon:
+  range:
+    enabled: true
+    block: "DIAMOND_BLOCK"
+    #Depth below beacon
+    depth: 1
+    #Default Range: 10 + 10 per layer
+    range: 200
+
+  moreEffect:
+    enabled: false
+    #Depth below beacon
+    depth: 2
+    block: "NETHERITE_BLOCK"
+    #Add Effect addition
+    add: 1
+
+
+join:
+  message: "[§a+§r]§9 {player}"
+
+  sound:
+    enabled: true
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+
+leave:
+  message: "[§c-§r] §9 {player}"
+
+teleportResistance:
+  enabled: true
+  time: 3
+  lvl: 99
+
+gulag:
+  spawn1:
+    x: 35
+    y: 110
+    z: 64
+    yaw: 90.0
+    pich: 0.0
+    color: "red"
+
+  spawn2:
+    x: -19
+    y: 110
+    z: 64
+    yaw: -90.0
+    pich: 0.0
+    color: "green"
+
+  enabled: true
+  world: "gulag"
+
+  #Playeholder {msg} für message
+  msg: "§b§ksdsadsdsdsadsd §7[§r [§bE§9Z§fB]§e GULAG §7] §b§ksdsadsdsdsadsd §r\n {msg}\n §b§ksdsadsdsdsadsd §7[§r [§bE§9Z§fB]§e GULAG §7] §b§ksdsadsdsdsadsd §r"
+  spectators:
+    enabled: true
+    #Placeholder {killer}, {player}
+    message: "§e| \n§e| §c {killer} killed§b {player} \n§e|§9 Schaue mit §6/gulag watch §9zu \n§e| \n§e|"
+
+
+customCrafting:
+  invisItemFrames: true
+
