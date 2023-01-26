@@ -1,21 +1,44 @@
 enabled: true
-präfix: "[§bE§9Z§fB§r] "
+präfix: "§9[§bKleckzz §8● §cANARCHY§9] §5§l»§r "
 
-rf:
-  world: "rfm"
 
 death:
   message: true
 
-gunp:
-  enabled: true
-  x: 228
-  y: 63
-  z: 145
-  world: "rfm"
+commandBlock:
+  message: "§cUnknown command. Need help? §9»§6 /help"
+  hideAllNotPluginCMDS: false
+  hideSubCommands: true
+
+  #Example /bukkit:ver
+  disableSubCmdUsage: true
+  subCMDdisabled: "§cSub command usage disabled!"
+
+  cmds:
+    - "airplane"
+    - "pufferfish"
+    - "purpur"
+    - "paper"
+    - "?"
+    - "icanhasbukkit"
+    - "bukkit"
+    - "mp"
+    - "multipaper"
+    - "mpdebug"
+    - "mpmap"
+    - "trigger"
+    - "w"
+
+  replace:
+    ver: "/info"
+    verion: "/info"
+    plugins: "/info"
+    pl: "/info"
+    about: "/info"
+    help: "/info"
 
 end:
-  enabled: true
+  enabled: false
   x: 704
   y: 32
   z: -1424
@@ -54,7 +77,7 @@ becaon:
     #Depth below beacon
     depth: 1
     #Default Range: 10 + 10 per layer
-    range: 200
+    range: 300
 
   moreEffect:
     enabled: false
@@ -109,5 +132,6 @@ gulag:
 
 
 customCrafting:
-  invisItemFrames: true
+  invisItemFrames: false
+  encharntedApple: true
 

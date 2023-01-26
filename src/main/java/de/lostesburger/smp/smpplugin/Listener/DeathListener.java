@@ -1,6 +1,7 @@
 package de.lostesburger.smp.smpplugin.Listener;
 
 import de.lostesburger.smp.smpplugin.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,6 +22,6 @@ public class DeathListener implements Listener {
         String s = präfix+"§4Death-world: "+loc.getWorld().getName()+" §5x: "+loc.getBlockX()+" §by: "+loc.getBlockY()+" §az: "+loc.getBlockZ();
 
         player.sendMessage(s);
-        System.out.println(s);
+        Bukkit.getConsoleSender().sendMessage(s);
     }
 }

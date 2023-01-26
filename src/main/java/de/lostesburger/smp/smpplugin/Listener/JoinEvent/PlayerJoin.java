@@ -23,5 +23,7 @@ public class PlayerJoin implements Listener {
         if(Main.config.getBoolean("join.sound.enabled")){
             player.playSound(player.getLocation(), Sound.valueOf(Main.config.getString("join.sound.sound")), 100.0F, 1.0F);
         }
+
+        player.sendTitle("§bKleckzz §8● §cANACHY","§9§lCashing your data from the server...", 1,80,1);
     }
 }

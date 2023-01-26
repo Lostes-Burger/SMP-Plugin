@@ -1,12 +1,17 @@
 package de.lostesburger.smp.smpplugin;
 
+import com.github.puregero.multilib.MultiLib;
+import de.dytanic.cloudnet.CloudNet;
+import de.dytanic.cloudnet.driver.CloudNetDriver;
+import de.dytanic.cloudnet.driver.event.IEventManager;
+import de.dytanic.cloudnet.driver.event.events.service.CloudServiceStartEvent;
+import de.lostesburger.smp.smpplugin.CommandOveride.PreCommandEvent;
 import de.lostesburger.smp.smpplugin.Commands.EndCmd;
-import de.lostesburger.smp.smpplugin.Commands.GunPowder;
-import de.lostesburger.smp.smpplugin.Commands.RaidFarm.RfCmd;
 import de.lostesburger.smp.smpplugin.Commands.TpaCommand;
 import de.lostesburger.smp.smpplugin.Commands.TpacceptCommand;
 import de.lostesburger.smp.smpplugin.Listener.BeaconRange.BeaconRange;
 import de.lostesburger.smp.smpplugin.Listener.BedrockBreak.BlockPlace;
+import de.lostesburger.smp.smpplugin.Listener.CustomRecipe.OpGap;
 import de.lostesburger.smp.smpplugin.Listener.DeathListener;
 import de.lostesburger.smp.smpplugin.Listener.JoinEvent.PlayerJoin;
 import de.lostesburger.smp.smpplugin.Listener.NotToExpensive.AnvilListener;
@@ -14,12 +19,11 @@ import de.lostesburger.smp.smpplugin.Listener.PhantomSpawn.EntitySpawnEvent;
 import de.lostesburger.smp.smpplugin.Listener.QuitEvent.PlayerQuit;
 import de.lostesburger.smp.smpplugin.Listener.SpawnerBreak.BlockBreak;
 import de.lostesburger.smp.smpplugin.Listener.TeleportResistance.PlayerTeleport;
+import de.lostesburger.smp.smpplugin.MultiPaper.ServerStartEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.block.Block;
-import org.bukkit.block.EntityBlockStorage;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -28,6 +32,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.File;
 import java.util.HashMap;
@@ -46,13 +52,14 @@ public final class Main extends JavaPlugin {
 
     public static String präfix;
 
-    private static Main instance;
+    private static Plugin instance;
 
     @Override
     public void onEnable() {
         boolean start = true;
+        instance = this;
 
-        this.getLogger().log(Level.WARNING, "Starting Kleckzz SMP System v0.4");
+        this.getLogger().log(Level.WARNING, "Starting Kleckzz Anarchy System v0.5");
 
         /**
          * Config file(s)
@@ -79,20 +86,18 @@ public final class Main extends JavaPlugin {
         pm.registerEvents(new DeathListener(), this);
         pm.registerEvents(new AnvilListener(), this);
         pm.registerEvents(new EntitySpawnEvent(), this);
-        pm.registerEvents(new BlockBreak(), this);
         pm.registerEvents(new de.lostesburger.smp.smpplugin.Listener.MoreEnchant.AnvilListener(), this);
         pm.registerEvents(new BlockPlace(), this);
         pm.registerEvents(new BeaconRange(), this);
         pm.registerEvents(new PlayerJoin(), this);
         pm.registerEvents(new PlayerQuit(), this);
         pm.registerEvents(new PlayerTeleport(), this);
+        pm.registerEvents(new PreCommandEvent(), this);
+
         //Register Commands
-        getCommand("tpa").setExecutor(new TpaCommand());
-        getCommand("tpaccept").setExecutor(new TpacceptCommand());
-        getCommand("rf").setExecutor(new RfCmd());
-        getCommand("endp").setExecutor(new EndCmd());
-        getCommand("gunp").setExecutor(new GunPowder());
-        getCommand("itemStackInfo").setExecutor(new ItemStackCMD());
+        //getCommand("tpa").setExecutor(new TpaCommand());
+        //getCommand("tpaccept").setExecutor(new TpacceptCommand());
+        //getCommand("endp").setExecutor(new EndCmd());
 
         this.getLogger().log(Level.INFO, "Registerd Command(s)/Listener(s)");
 
@@ -101,17 +106,39 @@ public final class Main extends JavaPlugin {
          */
         this.getLogger().log(Level.INFO, "Registering Custom recipe(s)...");
 
-        if(Main.config.getBoolean("customCrafting.invisItemFrames")){
-            createInvisItemFramesRecipe();
-        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if(Main.config.getBoolean("customCrafting.invisItemFrames")){
+                    createInvisItemFramesRecipe();
+                }
 
-        this.getLogger().log(Level.INFO, "Registerd Custom recipe(s)");
+                if(Main.config.getBoolean("customCrafting.encharntedApple")){
+                    OpGap.registerRecipie();
+                }
+
+                instance.getLogger().log(Level.INFO, "Registerd Custom recipe(s)");
+            }
+        }.runTaskLater(this, 90);
+
+
+
+        /**
+         * CloudNet Commands & Events
+         */
+        this.getLogger().log(Level.INFO, "Registering CloudNet Listener(s)...");
+
+        IEventManager eM = CloudNetDriver.getInstance().getEventManager();
+        eM.registerListener(new ServerStartEvent());
+
+        this.getLogger().log(Level.INFO, "Registerd CloudNet Listener(s)");
+
+
 
         if(!start){
-            getLogger().log(Level.WARNING, "Kleckzz SMP Plugin stopped due to error!");
+            getLogger().log(Level.WARNING, "Kleckzz Anarchy Plugin stopped due to error!");
             Runtime.getRuntime().halt(0);
         }
-        instance = this;
 
 
     }

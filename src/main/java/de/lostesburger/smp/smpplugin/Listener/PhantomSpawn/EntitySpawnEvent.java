@@ -10,10 +10,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.logging.Level;
+
 public class EntitySpawnEvent implements Listener {
 
     @EventHandler
     public void onSpawn(org.bukkit.event.entity.EntitySpawnEvent event) {
+
         if(!Main.config.getBoolean("disablePhantomSpawn.enabled")) return;
         Entity entity = event.getEntity();
 
