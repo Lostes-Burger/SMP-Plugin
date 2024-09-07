@@ -1,6 +1,5 @@
 package de.lostesburger.smp.smpplugin.Listener.BedrockBreak;
 
-import de.lostesburger.smp.smpplugin.Listener.BeaconRange.BeaconRange;
 import de.lostesburger.smp.smpplugin.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

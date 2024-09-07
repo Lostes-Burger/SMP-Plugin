@@ -10,8 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.logging.Level;
-
 public class EntitySpawnEvent implements Listener {
 
     @EventHandler

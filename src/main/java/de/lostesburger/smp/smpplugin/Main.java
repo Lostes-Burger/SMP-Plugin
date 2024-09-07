@@ -1,169 +1,84 @@
 package de.lostesburger.smp.smpplugin;
 
-import com.github.puregero.multilib.MultiLib;
-import de.dytanic.cloudnet.CloudNet;
-import de.dytanic.cloudnet.driver.CloudNetDriver;
-import de.dytanic.cloudnet.driver.event.IEventManager;
-import de.dytanic.cloudnet.driver.event.events.service.CloudServiceStartEvent;
-import de.lostesburger.smp.smpplugin.CommandOveride.PreCommandEvent;
-import de.lostesburger.smp.smpplugin.Commands.EndCmd;
-import de.lostesburger.smp.smpplugin.Commands.TpaCommand;
-import de.lostesburger.smp.smpplugin.Commands.TpacceptCommand;
-import de.lostesburger.smp.smpplugin.Listener.BeaconRange.BeaconRange;
-import de.lostesburger.smp.smpplugin.Listener.BedrockBreak.BlockPlace;
-import de.lostesburger.smp.smpplugin.Listener.CustomRecipe.OpGap;
-import de.lostesburger.smp.smpplugin.Listener.DeathListener;
-import de.lostesburger.smp.smpplugin.Listener.JoinEvent.PlayerJoin;
-import de.lostesburger.smp.smpplugin.Listener.NotToExpensive.AnvilListener;
-import de.lostesburger.smp.smpplugin.Listener.PhantomSpawn.EntitySpawnEvent;
-import de.lostesburger.smp.smpplugin.Listener.QuitEvent.PlayerQuit;
-import de.lostesburger.smp.smpplugin.Listener.SpawnerBreak.BlockBreak;
-import de.lostesburger.smp.smpplugin.Listener.TeleportResistance.PlayerTeleport;
-import de.lostesburger.smp.smpplugin.MultiPaper.ServerStartEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import de.lostesburger.corelib.Chat.CommandRestriction.Commands.CommandPreventManager;
+import de.lostesburger.corelib.NMS.Minecraft;
+import de.lostesburger.corelib.NMS.Version;
+import de.lostesburger.smp.smpplugin.Utils.RegisterCommands;
+import de.lostesburger.smp.smpplugin.Utils.RegisterListeners;
+import de.lostesburger.smp.smpplugin.Utils.RegisterRecipes;
+import de.lostesburger.smp.smpplugin.Utils.Scheduler;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
-
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
 import java.util.logging.Level;
 
-public final class Main extends JavaPlugin {
-
+public final class Main extends JavaPlugin { 
+    public static ArrayList<Scheduler.Task> schedulers = new ArrayList<Scheduler.Task>();
     public static FileConfiguration config;
     public static HashMap<String, String> tpaRequests = new HashMap<String, String>();
-    public static HashMap<UUID, Location> lastPlayerPos = new HashMap<UUID, Location>();
-
-    public static HashMap<UUID, UUID> gulagRequests = new HashMap<UUID, UUID>();
-    public static HashMap<UUID, Long> gulagRequestsTime = new HashMap<UUID, Long>();
-    public static HashMap<UUID, UUID> gulagCFight = new HashMap<UUID, UUID>();
-
     public static String präfix;
-
     private static Plugin instance;
+    public static ItemStack invisFrame;
+    public static String invisFrameKey = "invisibleKey";
+    public static Version McVer;
 
     @Override
     public void onEnable() {
         boolean start = true;
         instance = this;
 
-        this.getLogger().log(Level.WARNING, "Starting Kleckzz Anarchy System v0.5");
+        this.getLogger().log(Level.WARNING, "Starting SPM Plugin v4.0");
+        McVer = Minecraft.getVersion();
+
+        if(McVer != Version.v1_21){
+            this.getLogger().log(Level.SEVERE, "SMP Plugin using API 1.21 (downgrading Deprecated no full support)");
+        }
+
+        if(Scheduler.isFolia()){
+            this.getLogger().severe("Server is running Folia, a version not fully supported by this plugin");
+            this.getLogger().warning("Not supported features:");
+            this.getLogger().warning("- Command blocking");
+            this.getLogger().warning("- Anvil dupe");
+            this.getLogger().warning("Unknown errors in the game itself can occur (including major security flaws)");
+            this.getLogger().warning("or errors not found inside this plugin");
+        }
+
 
         /**
          * Config file(s)
          */
-        this.getLogger().log(Level.INFO, "Loading/Creating Config file(s)...");
-
+        this.getLogger().log(Level.INFO, "Loading/Creating Configuration...");
         File confFile = new File(this.getDataFolder().getPath(), "config.yml");
-        if(confFile == null){
-            saveConfig();
-        }
+        if(confFile == null) saveConfig();
         saveDefaultConfig();
         config = getConfig();
         präfix = config.getString("präfix");
 
-        this.getLogger().log(Level.INFO, "Loaded/Created Config file(s)");
-
+        this.getLogger().log(Level.INFO, "Loaded/Created Configuration");
 
         /**
          * Commands & Events
          */
-        this.getLogger().log(Level.INFO, "Registering Command(s)/Listener(s)...");
-
-        PluginManager pm = Bukkit.getPluginManager();
-        pm.registerEvents(new DeathListener(), this);
-        pm.registerEvents(new AnvilListener(), this);
-        pm.registerEvents(new EntitySpawnEvent(), this);
-        pm.registerEvents(new de.lostesburger.smp.smpplugin.Listener.MoreEnchant.AnvilListener(), this);
-        pm.registerEvents(new BlockPlace(), this);
-        pm.registerEvents(new BeaconRange(), this);
-        pm.registerEvents(new PlayerJoin(), this);
-        pm.registerEvents(new PlayerQuit(), this);
-        pm.registerEvents(new PlayerTeleport(), this);
-        pm.registerEvents(new PreCommandEvent(), this);
-
-        //Register Commands
-        //getCommand("tpa").setExecutor(new TpaCommand());
-        //getCommand("tpaccept").setExecutor(new TpacceptCommand());
-        //getCommand("endp").setExecutor(new EndCmd());
-
-        this.getLogger().log(Level.INFO, "Registerd Command(s)/Listener(s)");
+        this.getLogger().log(Level.INFO, "Registering Commands/Listeners...");
+        new RegisterListeners(this);
+        new RegisterCommands(this);
 
         /**
          * Custom recipe(s)
          */
         this.getLogger().log(Level.INFO, "Registering Custom recipe(s)...");
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if(Main.config.getBoolean("customCrafting.invisItemFrames")){
-                    createInvisItemFramesRecipe();
-                }
-
-                if(Main.config.getBoolean("customCrafting.encharntedApple")){
-                    OpGap.registerRecipie();
-                }
-
-                instance.getLogger().log(Level.INFO, "Registerd Custom recipe(s)");
-            }
-        }.runTaskLater(this, 90);
-
-
-
-        /**
-         * CloudNet Commands & Events
-         */
-        this.getLogger().log(Level.INFO, "Registering CloudNet Listener(s)...");
-
-        IEventManager eM = CloudNetDriver.getInstance().getEventManager();
-        eM.registerListener(new ServerStartEvent());
-
-        this.getLogger().log(Level.INFO, "Registerd CloudNet Listener(s)");
-
-
+        new RegisterRecipes(this);
 
         if(!start){
-            getLogger().log(Level.WARNING, "Kleckzz Anarchy Plugin stopped due to error!");
+            getLogger().log(Level.WARNING, "SPM Plugin stopped due to error!");
             Runtime.getRuntime().halt(0);
         }
-
-
     }
 
-    public void createInvisItemFramesRecipe(){
-        ItemStack stack = new ItemStack(Material.ITEM_FRAME, 1);
-        //EntityBlockStorage storage = (EntityBlockStorage) stack.getData();
-
-        ItemMeta meta = stack.getItemMeta();
-
-        meta.setDisplayName("§cInvisible Item frame");
-        meta.getPersistentDataContainer().set(new NamespacedKey(this, "invisible"), PersistentDataType.BYTE, (byte) 1);
-        stack.setItemMeta(meta);
-
-        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(this, "invisItemFrame"), stack);
-        recipe.shape(" X ", " P ", " X ");
-        recipe.setIngredient('X', Material.GLASS);
-        recipe.setIngredient('P', Material.ITEM_FRAME);
-
-        if(getServer().getRecipe(new NamespacedKey(this, "invisItemFrame")) != null  ){
-            getServer().removeRecipe(new NamespacedKey(this, "invisItemFrame"));
-        }
-
-        getServer().addRecipe(recipe);
-    }
 
     public static Plugin getInstance(){
         return instance;
@@ -171,6 +86,10 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        getLogger().log(Level.WARNING, "Kleckzz SPM Plugin Shut down!");
+        schedulers.forEach(task -> {
+            getLogger().log(Level.INFO, "Scheduler stopped!");
+            task.cancel();
+        });
+        getLogger().log(Level.WARNING, "SPM Plugin Shut down!");
     }
 }

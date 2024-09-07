@@ -1,20 +1,30 @@
 enabled: true
-präfix: "§9[§bKleckzz §8● §cANARCHY§9] §5§l»§r "
+präfix: "§9[§aSMP§9] §5§l»§r "
 
+dupes:
+  anvilDupe:
+    # Anvil dupe fom version 1.17 by renaming an item in an anvil until it brakes and the item drops and returns to the player's inventory
+    enabled: false
 
 death:
-  message: true
+  message: false
 
-commandBlock:
-  message: "§cUnknown command. Need help? §9»§6 /help"
-  hideAllNotPluginCMDS: false
+command:
+  # Enable filtering of commands using the blacklist and replace list
+  enabled: false
+  blacklistError: "§cUnknown command. Need help? §9»§a /help"
+  blacklistBypassPerm: "command.blacklist.bypass"
+
+  # Subcommands (Example /bukkit:ver) recommended to disable for best results in command filtering
+  disableSubCommands: true
+  subCommandError: "§cSub command usage disabled!"
+
+  # Modify the List of possible Commands seen by players when pressing TAB by removing all commands on the Blacklist and replace list
+  modifyTabComplete: false
+  tabCompleteBypassPerm: "command.tabcomplete.bypass"
   hideSubCommands: true
 
-  #Example /bukkit:ver
-  disableSubCmdUsage: true
-  subCMDdisabled: "§cSub command usage disabled!"
-
-  cmds:
+  blacklist:
     - "airplane"
     - "pufferfish"
     - "purpur"
@@ -28,110 +38,117 @@ commandBlock:
     - "mpmap"
     - "trigger"
     - "w"
-
+    - "servers"
+    - "spigot"
+    - "minecraft"
+    - "folia"
+    - "callback"
   replace:
-    ver: "/info"
-    verion: "/info"
-    plugins: "/info"
-    pl: "/info"
-    about: "/info"
-    help: "/info"
+    - ver: "/info"
+    - version: "/info"
+    - plugins: "/info"
+    - pl: "/info"
+    - about: "/info"
+    - help: "/info"
 
 end:
   enabled: false
-  x: 704
-  y: 32
-  z: -1424
+  x: 0
+  y: 0
+  z: 0
   world: "world"
 
-tp:
-  enabled: true
-  price: 1
-  fullHealth: true
+tpa:
+  enabled: false
 
+  price: 16
+  item: "DIAMOND"
+  priceError: "§cDu hast nicht genug Diamanten, um dich zu teleportieren! Du brauchst 16 Diamanten!"
+  ownerPriceError: "§cDer Ersteller der Tpa Anfrage hat nicht genug Diamanten!"
+
+  fullHealth: true
+  healthError: "§cDu musst volle Leben haben, um dich Teleportieren zu können!"
+
+  playerNotFoundError: "§cDer Spieler Kann nicht gefunden werden!"
+  ownTpaError: "§cDu kannst dich nicht zu dir selber Teleportieren!"
+  # (player) replaces the Player's Name
+  tpaMessage: "§5-player- §ahat eine Tpa anfrage gestellt\n \n §c- Benutze /tpaaccept -player- zum Akzeptieren!"
+  tpaSendMessage: "§aTpa Anfrage wurde versendet!"
+  hoverText: "Klicke zum Akzeptieren"
+
+  noTpaRequestError: "Dieser Spieler hat keine Tpa Anfrage an dich gestellt!"
+
+# Removes the To Expensive error message when trying to combine or rename items in an anvil
 notToExpensive:
-  enabled: true
+  enabled: false
   setPrice: 25
 
+# Allow players to enchant their bow with both mending and infinity
+AllowMendingInfinityBow:
+  enabled: false
+
+# Allow players to enchant their Items selected level more
+# @Deprecated -> Update
+moreEnchant:
+  enabled: false
+  addLvl: 1
+
+# Prevents Phantoms from spawning. Select a replacement mob and if the replacement should receive the slow falling effect
 disablePhantomSpawn:
-  enabled: true
+  enabled: false
   replaceWith: "COD"
   slowFalling: true
 
-mobSpawner:
-  drop: false
-
-moreEnchant:
-  enabled: true
-  addLvl: 1
-
+# Allows players to break bedrock by placing a selected block below a bedrock block, despite all previous methods being patched by paper or purpur
 bedrock:
-  break: true
+  break: false
   block: "GOLD_BLOCK"
   world: "world_nether"
 
-becaon:
-  range:
-    enabled: true
-    block: "DIAMOND_BLOCK"
-    #Depth below beacon
-    depth: 1
-    #Default Range: 10 + 10 per layer
-    range: 300
-
-  moreEffect:
-    enabled: false
-    #Depth below beacon
-    depth: 2
-    block: "NETHERITE_BLOCK"
-    #Add Effect addition
-    add: 1
-
-
 join:
+  enabled: false
   message: "[§a+§r]§9 {player}"
-
+  first:
+    message: "[§a+§r]&9 {player} &#084cfbj&#1649fbo&#2445fbi&#3242fbn&#3f3ffce&#4d3bfcd &#5b38fcA&#6935fcn&#7731fca&#852efcr&#932bfcc&#a027fdh&#ae24fdy &#bc21fdf&#c21ef4o&#c11ce2r &#c01acft&#bf19bdh&#be17abe &#bd1598f&#bc1386i&#bb1174r&#ba0f61s&#b80d4ft &#b70c3dt&#b60a2bi&#b50818m&#b40606e"
+    title: ["§9[§aSMP§9]", "§cWillkommen auf dem Server"]
+    #Stay duration in Ticks
+    titleDuration: 80
   sound:
     enabled: true
     sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
 
 leave:
-  message: "[§c-§r] §9 {player}"
+  enabled: false
+  message: "[§c-§r] §9{player}"
 
+# Gives a player Resistance after teleport, prevents teleport traps and gives players with a slow pc a fair buff
 teleportResistance:
-  enabled: true
+  enabled: false
   time: 3
   lvl: 99
 
-gulag:
-  spawn1:
-    x: 35
-    y: 110
-    z: 64
-    yaw: 90.0
-    pich: 0.0
-    color: "red"
-
-  spawn2:
-    x: -19
-    y: 110
-    z: 64
-    yaw: -90.0
-    pich: 0.0
-    color: "green"
-
-  enabled: true
-  world: "gulag"
-
-  #Playeholder {msg} für message
-  msg: "§b§ksdsadsdsdsadsd §7[§r [§bE§9Z§fB]§e GULAG §7] §b§ksdsadsdsdsadsd §r\n {msg}\n §b§ksdsadsdsdsadsd §7[§r [§bE§9Z§fB]§e GULAG §7] §b§ksdsadsdsdsadsd §r"
-  spectators:
-    enabled: true
-    #Placeholder {killer}, {player}
-    message: "§e| \n§e| §c {killer} killed§b {player} \n§e|§9 Schaue mit §6/gulag watch §9zu \n§e| \n§e|"
-
-
+# Custom crafting recipes
+# Invisible item Frames crafted using 2 glass 1, at the middle top slot and 1 in the middle bottom slot, finally an item-frame in the middle slot
+# Enchantment golden apples crafted using 8 gold blocks surrounding an apple in the middle
 customCrafting:
   invisItemFrames: false
-  encharntedApple: true
+  enchantedApple: false
 
+# not finished
+# @Deprecated -> Update
+restart:
+  title: ["§9[§aSMP§9] §5§l»§c Restart", "Server startet in {sec} Sekunden neu!"]
+
+# Enables users to use the /disenchant Command to remove a selected unwanted Enchantment
+# Set a permission to only grand certain players access to this command
+disEnchantCommand:
+  enabled: false
+  permission: null
+  message: "§cKeine Berechigungen, um diesen Command zu benutzen."
+
+# Minecraft version 1.21 effectively killed all automatic Raid Farms by making Bad Omen effect only obtainable when drinking a Potion
+# Readable Raid farms below by setting enabled to true
+# Prevent Raid Captains from dropping a Bad Omen potion (Option true/false)
+raidFarms:
+  enabled: false
+  preventBottleDrops: true

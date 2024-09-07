@@ -15,10 +15,13 @@ public class PlayerTeleport implements Listener {
 
         if(event.getCause() == PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT) return;
         if(event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) return;
-        if(event.getFrom().distance(event.getTo()) < 100) return;
+
+        if(event.getFrom().getWorld().getName() == event.getTo().getWorld().getName()){
+            if(event.getFrom().distance(event.getTo()) < 100) return;
+        }
 
         Player player = event.getPlayer();
 
-        player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Main.config.getInt("teleportResistance.time"), Main.config.getInt("teleportResistance.lvl") ));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, Main.config.getInt("teleportResistance.time"), Main.config.getInt("teleportResistance.lvl") ));
     }
 }

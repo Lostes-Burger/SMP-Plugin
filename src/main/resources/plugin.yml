@@ -1,9 +1,9 @@
 name: SMPPlugin
 version: '${project.version}'
 main: de.lostesburger.smp.smpplugin.Main
-api-version: 1.19
+api-version: 1.20
 author: "Lostes_Burger"
-
+folia-supported: true
 commands:
   tpa:
 
@@ -13,3 +13,6 @@ commands:
 
   info:
     description: Get Information about the server
+
+  disEnchant:
+    description: Remove Item's elected enchantment
